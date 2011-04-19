@@ -1,0 +1,24 @@
+Revision history for Crypt-URandom
+
+0.0.27  Wed Apr 20 06:45:41 2011
+       Included t/export.t in MANIFEST
+       Formatting changes
+       Changed module name from Crypt::Random::NonBlocking to Crypt::URandom
+
+0.0.25  Mon Apr 18 18:55:30 2011
+       Removed t/perlcritic.t due to other Perl::Critic policies being testing on cpan.org
+       Changed the interface to be Crypt::Random::NonBlocking::urandom();
+       Allowed urandom to be exported
+
+0.0.23  Mon Apr 18 07:56:17 2011
+       Added t/rand.t to actually test the module
+
+0.0.21  Mon Apr 18 07:00:17 2011
+       Removed dependency Readonly entirely as it is a non-core module
+
+0.0.19  Sun Apr 17 20:42:17 2011
+       Added dependency Readonly to fix RT Ticket 67532 filed by YSAWANT
+
+0.0.11  Sun Apr 17 10:45:13 2011
+       Initial release.
+
