@@ -1,3 +1,6 @@
+## no critic (RequireRcsKeywords)
+# here's 20 cents kid, go buy yourself a real revision control system
+
 package Crypt::URandom;
 
 use warnings;
@@ -11,7 +14,7 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION = '0.0.27';
+our $VERSION = '0.28';
 
 my $CRYPT_SILENT      = hex '40';
 my $PROV_RSA_FULL     = 1;
@@ -192,8 +195,10 @@ or equal to Windows 2000.
 
 =item C<urandom>
 
+=for stopwords cryptographic
+
 This function accepts an integer and returns a string of the same size
-filled with random data.  The first call will initialise the native 
+filled with random data.  The first call will initialize the native 
 cryptographic libraries (if necessary) and load all the required Perl libraries
 
 =back
@@ -209,20 +214,28 @@ cryptographic functions provided by the operating system.
 
 =item C<Could not import CryptAcquireContext>
 
+=for stopwords CryptAcquireContextA advapi32
+
 The module was unable to load the CryptAcquireContextA function from the 
-advapi32 dynamic library.  The advapi32library cannot probably be loaded.
+advapi32 dynamic library.  The advapi32 library cannot probably be loaded.
 
 =item C<CryptAcquireContext failed>
+
+=for stopwords advapi32
 
 The module was unable to call the CryptAcquireContextA function from the
 advapi32 dynamic library.
 
 =item C<Could not import CryptGenRandom>
 
+=for stopwords advapi32 CryptGenRandom
+
 The module was unable to load the CryptGenRandom function from the 
 advapi32 dynamic library.
 
 =item C<Could not import SystemFunction036>
+
+=for stopwords SystemFunction036
 
 The module was unable to load the SystemFunction036 function from the 
 advapi32 dynamic library.
@@ -238,6 +251,8 @@ The Windows 2000 CryptGenRandom method call failed to generate the required
 amount of randomness
 
 =item C<RtlGenRand failed>
+
+=for stopwords RtlGenRand
 
 The post Windows 2000 RtlGenRand method call failed to generate the required
 amount of randomness
@@ -265,6 +280,8 @@ Crypt::URandom requires no configuration files or environment variables.
 
 =over
 
+=for stopwords perl
+
 If the platform is Win32, the Win32::API module will be required.  Otherwise
 no other modules other than those provided by perl will be required
 
@@ -288,8 +305,11 @@ L<http://rt.cpan.org>.
 
 David Dick  C<< <ddick@cpan.org> >>
 
+=for stopwords ACKNOWLEDGEMENTS
 
 =head1 ACKNOWLEDGEMENTS
+
+=for stopwords CryptoAPI Kanat-Alexander
 
 The Win32::API code for interacting with Microsoft's CryptoAPI was stolen with extreme
 gratitude from Crypt::Random::Source::Strong::Win32 by Max Kanat-Alexander
@@ -299,10 +319,12 @@ gratitude from Crypt::Random::Source::Strong::Win32 by Max Kanat-Alexander
 Copyright (c) 2011, David Dick C<< <ddick@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself.
 
 
 =head1 DISCLAIMER OF WARRANTY
+
+=for stopwords MERCHANTABILITY LICENCE
 
 BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
 FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
