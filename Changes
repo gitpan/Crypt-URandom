@@ -1,5 +1,9 @@
 Revision history for Crypt-URandom
 
+0.29  Wed Apr 20 06:45:41 2011
+       Added binmode call to the open for /dev/urandom
+       Optimised /dev/urandom access to only open a filehandle once and only reopen after read errors
+
 0.28  Wed Apr 20 06:45:41 2011
        Dropped extra 0 in version number
        Now passes perlcritic -1

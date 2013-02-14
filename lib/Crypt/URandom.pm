@@ -14,7 +14,7 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 my $CRYPT_SILENT      = hex '40';
 my $PROV_RSA_FULL     = 1;
@@ -26,6 +26,7 @@ my $_initialised;
 my $_context;
 my $_cryptgenrandom;
 my $_rtlgenrand;
+my $_urandom_handle;
 
 sub _init {
     if ( $OSNAME eq 'MSWin32' ) {
@@ -130,27 +131,29 @@ sub urandom {
         return $buffer;
     }
     else {
-        my ($path) = '/dev/urandom';
-        if ( $OSNAME eq 'freebsd' ) {
-            $path = '/dev/random';    # FreeBSD's /dev/random is non-blocking
+        my $path = '/dev/urandom';
+        if ( !defined $_urandom_handle ) {
+            if ( $OSNAME eq 'freebsd' ) {
+                $path = '/dev/random';   # FreeBSD's /dev/random is non-blocking
+            }
+            $_urandom_handle = FileHandle->new( $path, Fcntl::O_RDONLY() )
+              or Carp::croak("Failed to open '$path' for reading:$OS_ERROR");
+            binmode $_urandom_handle;
         }
-        my ($handle) = FileHandle->new( $path, Fcntl::O_RDONLY() );
-        if ($handle) {
-            my ($result) = $handle->read( my $buffer, $length );
-            if ( defined $result ) {
-                if ( $result == $length ) {
-                    return $buffer;
-                }
-                else {
-                    Carp::croak("Only read $result bytes from '$path'");
-                }
+        my $result = $_urandom_handle->read( my $buffer, $length );
+        if ( defined $result ) {
+            if ( $result == $length ) {
+                return $buffer;
             }
             else {
-                Carp::croak("Failed to read from '$path':$OS_ERROR");
+                $_urandom_handle = undef;
+                Carp::croak("Only read $result bytes from '$path'");
             }
         }
         else {
-            Carp::croak("Failed to open '$path' for reading:$OS_ERROR");
+            my $error = $OS_ERROR;
+            $_urandom_handle = undef;
+            Carp::croak("Failed to read from '$path':$error");
         }
     }
 }
