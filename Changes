@@ -1,6 +1,9 @@
 Revision history for Crypt-URandom
 
-0.29  Wed Apr 20 06:45:41 2011
+0.30 - Mon Feb 25 07:55:00 2011
+       Fixed test cases
+
+0.29 - Thu Feb 14 06:40:41 2011
        Added binmode call to the open for /dev/urandom
        Optimised /dev/urandom access to only open a filehandle once and only reopen after read errors
 

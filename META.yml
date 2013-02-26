@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Crypt-URandom
-version:            0.29
+version:            0.30
 abstract:           Provide non blocking randomness
 author:
     - David Dick <ddick@cpan.org>
