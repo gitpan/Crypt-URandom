@@ -14,7 +14,7 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 my $CRYPT_SILENT      = hex '40';
 my $PROV_RSA_FULL     = 1;
