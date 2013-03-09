@@ -1,5 +1,8 @@
 Revision history for Crypt-URandom
 
+0.33 - Sat Mar 09 15:29:41 2011
+       Added @CARP_NOT
+
 0.32 - Sat Mar 09 15:15:37 2011
        Reformatting
 

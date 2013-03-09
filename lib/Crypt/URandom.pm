@@ -14,13 +14,15 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION = '0.32';
+our $VERSION = '0.33';
+our @CARP_NOT = ('Crypt::URandom');
 
 sub CRYPT_SILENT      { return 64; }               # hex 40
 sub PROV_RSA_FULL     { return 1; }
 sub VERIFY_CONTEXT    { return 4_026_531_840; }    # hex 'F0000000'
 sub W2K_MAJOR_VERSION { return 5; }
 sub W2K_MINOR_VERSION { return 0; }
+sub SINGLE_QUOTE { return q[']; }
 
 sub PATH {
     my $path = '/dev/urandom';
@@ -29,7 +31,6 @@ sub PATH {
     }
     return $path;
 }
-sub SINGLE_QUOTE { return q[']; }
 
 my $_initialised;
 my $_context;
@@ -182,7 +183,7 @@ Crypt::URandom - Provide non blocking randomness
 
 =head1 VERSION
 
-This document describes Crypt::URandom version 0.32
+This document describes Crypt::URandom version 0.33
 
 
 =head1 SYNOPSIS
