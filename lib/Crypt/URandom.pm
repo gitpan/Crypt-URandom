@@ -14,13 +14,22 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
-my $CRYPT_SILENT      = hex '40';
-my $PROV_RSA_FULL     = 1;
-my $VERIFY_CONTEXT    = hex 'F0000000';
-my $W2K_MAJOR_VERSION = hex '5';
-my $W2K_MINOR_VERSION = 0;
+sub CRYPT_SILENT      { return 64; }               # hex 40
+sub PROV_RSA_FULL     { return 1; }
+sub VERIFY_CONTEXT    { return 4_026_531_840; }    # hex 'F0000000'
+sub W2K_MAJOR_VERSION { return 5; }
+sub W2K_MINOR_VERSION { return 0; }
+
+sub PATH {
+    my $path = '/dev/urandom';
+    if ( $OSNAME eq 'freebsd' ) {
+        $path = '/dev/random';    # FreeBSD's /dev/random is non-blocking
+    }
+    return $path;
+}
+sub SINGLE_QUOTE { return q[']; }
 
 my $_initialised;
 my $_context;
@@ -34,9 +43,9 @@ sub _init {
         require Win32::API;
         require Win32::API::Type;
         my ( $major, $minor ) = ( Win32::GetOSVersion() )[ 1, 2 ];
-        my $ntorlower = ( $major < $W2K_MAJOR_VERSION ) ? 1 : 0;
+        my $ntorlower = ( $major < W2K_MAJOR_VERSION() ) ? 1 : 0;
         my $w2k =
-          ( $major == $W2K_MAJOR_VERSION and $minor == $W2K_MINOR_VERSION )
+          ( $major == W2K_MAJOR_VERSION() and $minor == W2K_MINOR_VERSION() )
           ? 1
           : 0;
 
@@ -57,8 +66,8 @@ sub _init {
 
             my $context = chr(0) x Win32::API::Type->sizeof('PULONG');
             my $result =
-              $crypt_acquire_context_a->Call( $context, 0, 0, $PROV_RSA_FULL,
-                $CRYPT_SILENT | $VERIFY_CONTEXT );
+              $crypt_acquire_context_a->Call( $context, 0, 0, PROV_RSA_FULL(),
+                CRYPT_SILENT() | VERIFY_CONTEXT() );
             my $pack_type = Win32::API::Type::packing('PULONG');
             $context = unpack $pack_type, $context;
             if ( !$result ) {
@@ -91,6 +100,13 @@ _RTLGENRANDOM_PROTO_
     }
     else {
         require FileHandle;
+        $_urandom_handle = FileHandle->new( PATH(), Fcntl::O_RDONLY() )
+          or Carp::croak( 'Failed to open '
+              . SINGLE_QUOTE()
+              . PATH()
+              . SINGLE_QUOTE()
+              . " for reading:$OS_ERROR" );
+        binmode $_urandom_handle;
     }
     return;
 }
@@ -131,15 +147,6 @@ sub urandom {
         return $buffer;
     }
     else {
-        my $path = '/dev/urandom';
-        if ( !defined $_urandom_handle ) {
-            if ( $OSNAME eq 'freebsd' ) {
-                $path = '/dev/random';   # FreeBSD's /dev/random is non-blocking
-            }
-            $_urandom_handle = FileHandle->new( $path, Fcntl::O_RDONLY() )
-              or Carp::croak("Failed to open '$path' for reading:$OS_ERROR");
-            binmode $_urandom_handle;
-        }
         my $result = $_urandom_handle->read( my $buffer, $length );
         if ( defined $result ) {
             if ( $result == $length ) {
@@ -147,13 +154,20 @@ sub urandom {
             }
             else {
                 $_urandom_handle = undef;
-                Carp::croak("Only read $result bytes from '$path'");
+                Carp::croak( "Only read $result bytes from "
+                      . SINGLE_QUOTE()
+                      . PATH()
+                      . SINGLE_QUOTE() );
             }
         }
         else {
             my $error = $OS_ERROR;
             $_urandom_handle = undef;
-            Carp::croak("Failed to read from '$path':$error");
+            Carp::croak( 'Failed to read from '
+                  . SINGLE_QUOTE()
+                  . PATH()
+                  . SINGLE_QUOTE()
+                  . ":$error" );
         }
     }
 }
@@ -168,7 +182,7 @@ Crypt::URandom - Provide non blocking randomness
 
 =head1 VERSION
 
-This document describes Crypt::URandom version 0.0.27
+This document describes Crypt::URandom version 0.32
 
 
 =head1 SYNOPSIS
