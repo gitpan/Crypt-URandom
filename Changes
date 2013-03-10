@@ -1,5 +1,8 @@
 Revision history for Crypt-URandom
 
+0.34 - Sun Mar 10 20:18:43 2011
+       Removed t/pod-coverage.t
+
 0.33 - Sat Mar 09 15:29:41 2011
        Added @CARP_NOT
 
